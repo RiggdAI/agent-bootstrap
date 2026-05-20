@@ -1,0 +1,79 @@
+# agent-bootstrap
+
+> Configure Hermes agent profiles with curated skills. Detects existing profiles, recommends skills, installs with user selection.
+
+Repo: https://github.com/RiggdAI/agent-bootstrap
+
+## Core entry points
+
+- [AGENTS.md](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/AGENTS.md): Install + operating protocol. Start here.
+- [README.md](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/README.md): Project overview.
+- [install.sh](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh): Main entry point script.
+
+## Implementation
+
+- [lib/detect.sh](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/lib/detect.sh): Hermes + profile detection functions.
+- [lib/skills.sh](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/lib/skills.sh): Skill selection + installation logic.
+- [lib/configure.sh](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/lib/configure.sh): Profile creation + skill linking.
+
+## Templates
+
+- [profiles/free/ai-engineer/SOUL.md](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/profiles/free/ai-engineer/SOUL.md): AI Engineer profile template.
+- [profiles/free/ai-engineer/profile.yaml](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/profiles/free/ai-engineer/profile.yaml): Profile configuration.
+- [profiles/free/ai-engineer/skills.json](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/profiles/free/ai-engineer/skills.json): Skill manifest.
+
+## Registry
+
+- [plugins/registry.json](https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/plugins/registry.json): Plugin registry.
+
+## Flow
+
+1. Detect Hermes installation
+2. Detect existing profiles in ~/profiles/
+3. User selects profile (or creates new)
+4. Recommend skills based on profile name
+5. User selects which skills to install
+6. Skills are appended to profile
+
+## Available skills
+
+| Skill | Purpose |
+|-------|---------|
+| office-hours | YC Office Hours — reframe before coding |
+| plan-eng-review | Eng manager-mode plan review |
+| plan-ceo-review | CEO/founder-mode plan review |
+| review | Pre-landing PR review |
+| qa | Systematic QA testing |
+| ship | Ship workflow with tests + review |
+| investigate | Systematic debugging |
+| health | Code quality dashboard |
+| cso | Security audit mode |
+| retro | Weekly engineering retrospective |
+| learn | Manage project learnings |
+| browse | Headless browser for QA |
+| scrape | Pull data from web pages |
+| skillify | Codify scrape flows as skills |
+| design-review | Visual QA |
+| context-save | Save working context |
+| context-restore | Restore saved context |
+| careful | Safety guardrails |
+| freeze | Restrict file edits |
+| guard | Full safety mode |
+| canary | Post-deploy monitoring |
+| benchmark | Performance regression detection |
+
+## Profile templates
+
+| Template | Recommended Skills |
+|----------|-------------------|
+| ai-engineer | office-hours, plan-eng-review, review, qa, ship, investigate, health |
+| chief-technology-officer | + plan-ceo-review, retro, cso |
+| research-agent | office-hours, investigate, learn, browse, scrape |
+| instagram-agent | office-hours, browse, scrape, skillify, design-review, qa |
+
+## Tiers
+
+| Tier | Features |
+|------|----------|
+| Free | Basic profiles + community skills |
+| Pro | Riggd custom skills + support + gbrain-data sync |

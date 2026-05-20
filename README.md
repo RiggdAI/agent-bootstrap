@@ -1,39 +1,71 @@
 # agent-bootstrap
 
-> Configure Hermes agent profiles with skills in one command.
+> Configure Hermes agent profiles with curated skills. Detects profiles → recommends → installs.
 
-## Quick Start
+Built by [Riggd](https://riggd.ai) for Hermes agent users. Installs 22 curated gstack skills based on your profile type.
+
+## Install
 
 ```bash
-# Install default profile (ai-engineer)
-curl -fsSL https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh | bash
-
-# Or specify a profile
-curl -fsSL https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh | bash -s -- --profile=cto
+curl -fsSL https://get.riggd.ai | bash
 ```
 
-## Requirements
+**Prerequisites:** [Hermes](https://hermes-agent.dev) must be installed first.
 
-- **Hermes agent** must be installed first
-- Git
-- Python 3.8+
+## Flow
 
-## Available Profiles
+```
+1. Detect Hermes ✓
+2. Detect existing profiles
+   ├── ai-gary-tan (15 skills)
+   ├── chief-technology-officer-2 (8 skills)
+   └── research-agent (3 skills)
+3. User selects profile
+4. Recommend skills based on profile name
+5. User selects which to install
+   ├── 1. Install recommended
+   ├── 2. Select manually
+   └── 3. Install all
+6. Skills are appended (never overwrite)
+```
 
-| Profile | Description |
-|---------|-------------|
-| `ai-engineer` | Software engineer with code review, testing, deployment |
-| `cto` | Technical leadership with architecture and team workflow |
-| `research-agent` | Research and analysis agent |
+## Available Skills
 
-## What it does
+| Skill | Purpose |
+|-------|---------|
+| office-hours | YC Office Hours — reframe before coding |
+| plan-eng-review | Eng manager-mode plan review |
+| plan-ceo-review | CEO/founder-mode plan review |
+| review | Pre-landing PR review |
+| qa | Systematic QA testing |
+| ship | Ship workflow with tests + review |
+| investigate | Systematic debugging |
+| health | Code quality dashboard |
+| cso | Security audit mode |
+| retro | Weekly engineering retrospective |
+| learn | Manage project learnings |
+| browse | Headless browser for QA |
+| scrape | Pull data from web pages |
+| skillify | Codify scrape flows as skills |
+| design-review | Visual QA |
+| context-save | Save working context |
+| context-restore | Restore saved context |
+| careful | Safety guardrails |
+| freeze | Restrict file edits |
+| guard | Full safety mode |
+| canary | Post-deploy monitoring |
+| benchmark | Performance regression detection |
 
-1. Detects Hermes installation
-2. Installs skill plugins (gstack, etc.)
-3. Configures profile with SOUL.md and skills
-4. Links skills to `~/profiles/{profile}/skills/`
+## Profile Templates
 
-## Manual Installation
+| Template | Recommended Skills |
+|----------|-------------------|
+| ai-engineer | office-hours, plan-eng-review, review, qa, ship, investigate, health |
+| chief-technology-officer | + plan-ceo-review, retro, cso |
+| research-agent | office-hours, investigate, learn, browse, scrape |
+| instagram-agent | office-hours, browse, scrape, skillify, design-review, qa |
+
+## Manual Install
 
 ```bash
 git clone https://github.com/RiggdAI/agent-bootstrap.git
@@ -41,34 +73,40 @@ cd agent-bootstrap
 ./install.sh --profile=ai-engineer
 ```
 
-## Structure
+## Directory Structure
 
 ```
 agent-bootstrap/
-├── install.sh          # Entry point
+├── install.sh           # Main entry point
 ├── lib/
-│   ├── detect.sh       # Hermes detection
-│   ├── skills.sh       # Install skills
-│   └── configure.sh    # Configure profile
+│   ├── detect.sh        # Hermes + profile detection
+│   ├── skills.sh        # Skill selection + installation
+│   └── configure.sh     # Profile creation + linking
 ├── profiles/
-│   └── free/           # Free tier profiles
+│   └── free/            # Free tier templates
 │       └── ai-engineer/
 │           ├── SOUL.md
 │           ├── profile.yaml
 │           └── skills.json
-└── plugins/
-    └── registry.json   # Available plugins
+├── plugins/
+│   └── registry.json    # Plugin registry
+├── AGENTS.md            # Agent entry point
+└── llms.txt             # Documentation index
 ```
 
-## For Riggd Clients
+## Tiers
 
-Pro tier features (requires license):
-- Custom profiles
-- Sync from gbrain-data
-- Riggd private skills
-- Priority support
+| Tier | Features |
+|------|----------|
+| Free | Basic profiles + community skills |
+| Pro | Riggd custom skills + support + gbrain-data sync |
 
-Contact hello@riggd.ai for Pro access.
+**Pro tier:** Contact hello@riggd.ai
+
+## Documentation
+
+- [AGENTS.md](./AGENTS.md) — Agent entry point (start here for AI agents)
+- [llms.txt](./llms.txt) — Documentation index
 
 ---
 

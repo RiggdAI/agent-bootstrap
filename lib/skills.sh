@@ -1,7 +1,26 @@
 #!/bin/bash
 # skills.sh - Install skill plugins
 
-PLUGINS_DIR="$HOME/.hermes/plugins"
+# Detect Hermes installation location
+detect_hermes_home() {
+    # Check common locations
+    if [ -d "$HOME/.hermes" ]; then
+        echo "$HOME/.hermes"
+    elif [ -d "$HOME/profiles" ]; then
+        # Hermes profiles exist, use first profile's plugins
+        local first_profile=$(ls -d "$HOME/profiles"/*/ 2>/dev/null | head -1)
+        if [ -n "$first_profile" ]; then
+            echo "${first_profile%/}"
+        else
+            echo "$HOME/.hermes"
+        fi
+    else
+        echo "$HOME/.hermes"
+    fi
+}
+
+HERMES_HOME=$(detect_hermes_home)
+PLUGINS_DIR="$HERMES_HOME/plugins"
 PROFILES_DIR="$HOME/profiles"
 
 # Available gstack skills (from garrytan/gstack)
@@ -39,13 +58,26 @@ declare -A TEMPLATE_SKILLS=(
     ["chief-technology-officer-2"]="office-hours plan-ceo-review plan-eng-review review ship investigate health retro cso"
     ["research-agent"]="office-hours investigate learn browse scrape"
     ["instagram-agent"]="office-hours browse scrape skillify design-review qa"
+    ["competitive-intel"]="office-hours investigate browse scrape learn review qa"
+    ["competitive-intel-agent"]="office-hours investigate browse scrape learn review qa"
+    ["product-manager"]="office-hours plan-eng-review review qa ship design-review"
+    ["founder"]="office-hours plan-ceo-review ship review qa investigate health"
 )
 
 install_gstack() {
     local gstack_dir="$PLUGINS_DIR/gstack"
     
     if [ -d "$gstack_dir" ]; then
-        echo -e "${GREEN}✓ gstack already installed${NC}"
+        echo -e "${GREEN}✓ gstack already installed at $gstack_dir${NC}"
+        return 0
+    fi
+    
+    # Try alternative locations
+    local alt_gstack="$HOME/profiles/ai-gary-tan/plugins/gstack"
+    if [ -d "$alt_gstack" ]; then
+        PLUGINS_DIR="$HOME/profiles/ai-gary-tan/plugins"
+        gstack_dir="$PLUGINS_DIR/gstack"
+        echo -e "${GREEN}✓ Using existing gstack at $gstack_dir${NC}"
         return 0
     fi
     
@@ -53,7 +85,7 @@ install_gstack() {
     
     mkdir -p "$PLUGINS_DIR"
     
-    if git clone https://github.com/garrytan/gstack.git "$gstack_dir" 2>/dev/null; then
+    if git clone --depth 1 https://github.com/garrytan/gstack.git "$gstack_dir" 2>/dev/null; then
         # Create plugin manifest
         cat > "$gstack_dir/plugin.yaml" << 'EOF'
 name: gstack
@@ -63,7 +95,7 @@ author: "Garry Tan"
 source: https://github.com/garrytan/gstack
 EOF
         
-        echo -e "${GREEN}✓ gstack installed${NC}"
+        echo -e "${GREEN}✓ gstack installed to $gstack_dir${NC}"
     else
         echo -e "${RED}✗ Failed to clone gstack${NC}"
         return 1
@@ -159,18 +191,28 @@ select_skills() {
 install_skills() {
     local profile="$1"
     local skills="$2"
-    local gstack_dir="$PLUGINS_DIR/gstack"
-    local skills_dir="$PROFILES_DIR/$profile/skills/gstack"
     
-    if [ ! -d "$gstack_dir" ]; then
-        echo -e "${RED}✗ gstack not installed${NC}"
+    # Find gstack installation
+    local gstack_dir=""
+    for loc in "$PLUGINS_DIR/gstack" "$HOME/profiles/ai-gary-tan/plugins/gstack" "$HOME/.hermes/plugins/gstack"; do
+        if [ -d "$loc" ]; then
+            gstack_dir="$loc"
+            break
+        fi
+    done
+    
+    if [ -z "$gstack_dir" ]; then
+        echo -e "${RED}✗ gstack not found. Run install_gstack first.${NC}"
         return 1
     fi
+    
+    local skills_dir="$PROFILES_DIR/$profile/skills/gstack"
     
     mkdir -p "$skills_dir"
     
     local count=0
     local existing=0
+    local missing=0
     
     read -ra skills_arr <<< "$skills"
     
@@ -192,6 +234,9 @@ install_skills() {
                 ln -sf "$skill_source" "$skill_target"
                 ((count++))
             fi
+        else
+            echo -e "${YELLOW}  Warning: skill '$skill' not found in gstack${NC}"
+            ((missing++))
         fi
     done
     
@@ -201,6 +246,10 @@ install_skills() {
     
     if [ $existing -gt 0 ]; then
         echo -e "${YELLOW}  $existing skills already existed (skipped)${NC}"
+    fi
+    
+    if [ $missing -gt 0 ]; then
+        echo -e "${YELLOW}  $missing skills not found in gstack${NC}"
     fi
 }
 

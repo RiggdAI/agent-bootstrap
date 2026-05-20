@@ -1,0 +1,18 @@
+name: ai-engineer
+description: AI-powered software engineer with code review, testing, and deployment skills
+version: 1.0.0
+tier: free
+
+plugins:
+  - name: gstack
+    source: https://github.com/garrytan/gstack.git
+    skills:
+      - office-hours
+      - plan-eng-review
+      - review
+      - qa
+      - ship
+      - investigate
+      - health
+      - design-review
+      - devex-review

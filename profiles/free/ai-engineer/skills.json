@@ -1,0 +1,21 @@
+{
+  "profile": "ai-engineer",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "gstack",
+      "source": "https://github.com/garrytan/gstack.git",
+      "skills": [
+        "office-hours",
+        "plan-eng-review",
+        "review",
+        "qa",
+        "ship",
+        "investigate",
+        "health",
+        "design-review",
+        "devex-review"
+      ]
+    }
+  ]
+}

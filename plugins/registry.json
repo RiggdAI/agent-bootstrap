@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    {
+      "name": "gstack",
+      "source": "https://github.com/garrytan/gstack.git",
+      "description": "AI Engineering Workflow - 47+ skills for software development",
+      "skills_count": 48,
+      "tier": "free"
+    }
+  ],
+  "version": "1.0.0"
+}

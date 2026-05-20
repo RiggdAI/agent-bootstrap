@@ -27,6 +27,7 @@ source "$SCRIPT_DIR/lib/configure.sh"
 
 # Parse arguments
 PROFILE=""
+AUTO_INSTALL=false
 while [[ $# -gt 0 ]]; do
     case $1 in
         --profile=*)
@@ -37,11 +38,16 @@ while [[ $# -gt 0 ]]; do
             PROFILE="$2"
             shift 2
             ;;
+        --auto|-a)
+            AUTO_INSTALL=true
+            shift
+            ;;
         --help|-h)
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
             echo "  --profile NAME   Profile to configure"
+            echo "  --auto, -a       Auto-install recommended skills (non-interactive)"
             echo "  --help, -h       Show this help message"
             exit 0
             ;;
@@ -133,8 +139,17 @@ echo ""
 echo -e "${YELLOW}Analyzing profile...${NC}"
 recommended=$(get_recommended_skills "$PROFILE")
 
-# Step 5: Let user select skills
-selected=$(select_skills "$PROFILE" "$recommended")
+# Step 5: Let user select skills (or auto-install)
+if [ "$AUTO_INSTALL" = true ]; then
+    echo ""
+    echo -e "${YELLOW}Auto-installing recommended skills:${NC}"
+    for skill in $recommended; do
+        echo "  - $skill"
+    done
+    selected="$recommended"
+else
+    selected=$(select_skills "$PROFILE" "$recommended")
+fi
 
 if [ -z "$selected" ]; then
     echo -e "${YELLOW}No skills selected${NC}"

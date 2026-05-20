@@ -81,7 +81,10 @@ cd agent-bootstrap
 | ai-engineer | office-hours, plan-eng-review, review, qa, ship, investigate, health |
 | chief-technology-officer | + plan-ceo-review, retro, cso |
 | research-agent | office-hours, investigate, learn, browse, scrape |
+| competitive-intel-agent | office-hours, investigate, browse, scrape, learn, review, qa |
 | instagram-agent | office-hours, browse, scrape, skillify, design-review, qa |
+| product-manager | office-hours, plan-eng-review, review, qa, ship, design-review |
+| founder | office-hours, plan-ceo-review, ship, review, qa, investigate, health |
 
 ## Manual Install
 

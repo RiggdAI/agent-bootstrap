@@ -10,11 +10,23 @@ Riggd's agent-bootstrap installs curated skill sets into existing Hermes agent p
 
 **Prerequisites:** Hermes must already be installed. If Hermes is not found, the script will exit with installation instructions.
 
-```bash
-# Quick install
-curl -fsSL https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh | bash
+**Recommended: download first, verify, then run**
 
-# Or clone and run
+```bash
+# 1. Download
+curl -fsSL https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh -o install.sh
+
+# 2. Verify (optional but recommended)
+cat install.sh
+
+# 3. Run
+chmod +x install.sh
+./install.sh
+```
+
+**Alternative: clone the repo**
+
+```bash
 git clone https://github.com/RiggdAI/agent-bootstrap.git
 cd agent-bootstrap
 ./install.sh
@@ -122,6 +134,56 @@ agent-bootstrap/
 2. `llms.txt` — Documentation index
 3. `README.md` — Project overview
 4. `lib/*.sh` — Implementation details
+
+## For Hermes Agents
+
+If you are a Hermes agent configuring profiles or installing skills, use agent-bootstrap:
+
+```bash
+# Install agent-bootstrap
+git clone https://github.com/RiggdAI/agent-bootstrap.git ~/agent-bootstrap
+cd ~/agent-bootstrap
+./install.sh
+```
+
+The script detects existing profiles in `~/profiles/`, recommends skills based on profile name, and lets you select which to install. Skills are appended, never overwritten.
+
+### Examples
+
+| Task | Command |
+|------|---------|
+| Fresh profile with recommended skills | Run agent-bootstrap. Select or create profile. Choose "Install recommended". |
+| Add specific skills | Run agent-bootstrap. Select profile. Choose "Select manually". Pick office-hours, review, ship. |
+| Full engineering setup | Run agent-bootstrap. Select profile. Choose "Install all" for ai-engineer template. |
+| Research agent setup | Run agent-bootstrap. Create profile "research-agent". Install recommended skills. |
+| Security-focused profile | Run agent-bootstrap. Create profile. Manually select cso, careful, guard, investigate. |
+
+### Available skills after installation
+
+| Skill | Purpose |
+|-------|---------|
+| office-hours | YC Office Hours — reframe before coding |
+| plan-eng-review | Eng manager-mode plan review |
+| plan-ceo-review | CEO/founder-mode plan review |
+| review | Pre-landing PR review |
+| qa | Systematic QA testing |
+| ship | Ship workflow with tests + review |
+| investigate | Systematic debugging |
+| health | Code quality dashboard |
+| cso | Security audit mode |
+| retro | Weekly engineering retrospective |
+| learn | Manage project learnings |
+| browse | Headless browser for QA |
+| scrape | Pull data from web pages |
+| skillify | Codify scrape flows as skills |
+| design-review | Visual QA |
+| context-save | Save working context |
+| context-restore | Restore saved context |
+| careful | Safety guardrails |
+| freeze | Restrict file edits |
+| guard | Full safety mode |
+| canary | Post-deploy monitoring |
+| benchmark | Performance regression detection |
 
 ## After installation
 

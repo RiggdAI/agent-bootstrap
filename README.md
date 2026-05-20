@@ -6,8 +6,26 @@ Built by [Riggd](https://riggd.ai) for Hermes agent users. Installs 22 curated g
 
 ## Install
 
+**Recommended: download first, verify, then run**
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh | bash
+# 1. Download
+curl -fsSL https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh -o install.sh
+
+# 2. Verify (optional but recommended)
+cat install.sh
+
+# 3. Run
+chmod +x install.sh
+./install.sh
+```
+
+**Alternative: clone the repo**
+
+```bash
+git clone https://github.com/RiggdAI/agent-bootstrap.git
+cd agent-bootstrap
+./install.sh
 ```
 
 **Prerequisites:** [Hermes](https://hermes-agent.dev) must be installed first.

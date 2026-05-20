@@ -7,7 +7,7 @@ Built by [Riggd](https://riggd.ai) for Hermes agent users. Installs 22 curated g
 ## Install
 
 ```bash
-curl -fsSL https://get.riggd.ai | bash
+curl -fsSL https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh | bash
 ```
 
 **Prerequisites:** [Hermes](https://hermes-agent.dev) must be installed first.

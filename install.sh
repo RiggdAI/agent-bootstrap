@@ -1,6 +1,6 @@
 #!/bin/bash
 # agent-bootstrap - Configure Hermes agent profiles with skills
-# Usage: curl -fsSL https://get.riggd.ai | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh | bash
 #        ./install.sh --profile=cto
 
 set -e

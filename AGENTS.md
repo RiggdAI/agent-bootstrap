@@ -12,7 +12,7 @@ Riggd's agent-bootstrap installs curated skill sets into existing Hermes agent p
 
 ```bash
 # Quick install
-curl -fsSL https://get.riggd.ai | bash
+curl -fsSL https://raw.githubusercontent.com/RiggdAI/agent-bootstrap/main/install.sh | bash
 
 # Or clone and run
 git clone https://github.com/RiggdAI/agent-bootstrap.git

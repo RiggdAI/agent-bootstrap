@@ -91,7 +91,12 @@ cd agent-bootstrap
 ```bash
 git clone https://github.com/RiggdAI/agent-bootstrap.git
 cd agent-bootstrap
+
+# Interactive (select skills manually)
 ./install.sh --profile=ai-engineer
+
+# Non-interactive (auto-install recommended)
+./install.sh --profile=competitive-intel-agent --auto
 ```
 
 ## Directory Structure

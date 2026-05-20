@@ -9,6 +9,7 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -40,10 +41,8 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
-            echo "  --profile NAME   Profile to install (default: ai-engineer)"
+            echo "  --profile NAME   Profile to configure"
             echo "  --help, -h       Show this help message"
-            echo ""
-            echo "Available profiles: ai-engineer, cto, research-agent"
             exit 0
             ;;
         *)
@@ -69,36 +68,93 @@ if ! detect_hermes; then
 fi
 echo -e "${GREEN}✓ Hermes found${NC}"
 
-# Step 2: Select profile
-if [ -z "$PROFILE" ]; then
+# Step 2: Detect existing profiles
+echo ""
+echo -e "${YELLOW}Detecting profiles...${NC}"
+profiles=$(detect_profiles)
+
+if [ -z "$profiles" ]; then
+    echo -e "${YELLOW}No existing profiles found in ~/profiles/${NC}"
     echo ""
-    echo "Choose profile to configure:"
-    echo "  1. AI Engineer (default)"
-    echo "  2. CTO / Technical Lead"
-    echo "  3. Research Agent"
-    echo ""
-    read -p "Enter choice [1-3]: " choice
+    echo "Would you like to create a new profile?"
+    read -p "Enter profile name: " PROFILE
     
-    case $choice in
-        1) PROFILE="ai-engineer" ;;
-        2) PROFILE="cto" ;;
-        3) PROFILE="research-agent" ;;
-        *) PROFILE="ai-engineer" ;;
-    esac
+    if [ -z "$PROFILE" ]; then
+        echo -e "${RED}No profile name provided${NC}"
+        exit 1
+    fi
+    
+    create_profile "$PROFILE"
+else
+    # Show existing profiles
+    echo ""
+    echo "Existing profiles:"
+    echo ""
+    
+    i=1
+    profiles_arr=($profiles)
+    for p in "${profiles_arr[@]}"; do
+        skill_count=$(count_profile_skills "$p")
+        printf "  %d. %-30s (%d skills)\n" "$i" "$p" "$skill_count"
+        ((i++))
+    done
+    printf "  %d. Create new profile\n" "$i"
+    echo ""
+    
+    # Select profile
+    if [ -z "$PROFILE" ]; then
+        read -p "Select profile [1-$i]: " choice
+        
+        if [ "$choice" -eq "$i" ]; then
+            # Create new profile
+            read -p "Enter profile name: " PROFILE
+            create_profile "$PROFILE"
+        elif [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -lt "$i" ]; then
+            PROFILE="${profiles_arr[$((choice-1))]}"
+        else
+            echo -e "${RED}Invalid choice${NC}"
+            exit 1
+        fi
+    fi
 fi
 
 echo ""
-echo -e "${YELLOW}Installing profile: $PROFILE${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════${NC}"
+echo -e "${BLUE}  Configuring: $PROFILE${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════${NC}"
 
-# Step 3: Install skills
-install_skills "$PROFILE"
-
-# Step 4: Configure profile
-configure_profile "$PROFILE"
-
+# Step 3: Install gstack plugin
 echo ""
-echo -e "${GREEN}✓ Done!${NC}"
+echo -e "${YELLOW}Checking skill plugins...${NC}"
+install_gstack
+
+# Step 4: Get recommended skills
 echo ""
-echo "Profile configured at: ~/profiles/$PROFILE/"
+echo -e "${YELLOW}Analyzing profile...${NC}"
+recommended=$(get_recommended_skills "$PROFILE")
+
+# Step 5: Let user select skills
+selected=$(select_skills "$PROFILE" "$recommended")
+
+if [ -z "$selected" ]; then
+    echo -e "${YELLOW}No skills selected${NC}"
+    exit 0
+fi
+
+# Step 6: Install skills
+echo ""
+echo -e "${YELLOW}Installing skills...${NC}"
+install_skills "$PROFILE" "$selected"
+
+# Step 7: Summary
+echo ""
+echo -e "${GREEN}═══════════════════════════════════════════${NC}"
+echo -e "${GREEN}  Done!${NC}"
+echo -e "${GREEN}═══════════════════════════════════════════${NC}"
+echo ""
+echo "Profile: ~/profiles/$PROFILE/"
+skill_count=$(count_profile_skills "$PROFILE")
+echo "Skills:  $skill_count installed"
+echo ""
 echo "Run: hermes chat"
 echo ""
